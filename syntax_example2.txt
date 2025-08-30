@@ -1,0 +1,35 @@
+
+const ALU_ADD = 0b0101;
+const ALU_SUB = 0b0110;
+
+/* Signal and field definitions */
+signal carry_in  : 3;      /* Single bit at position 3 */
+signal alu_op    : [5:2];  /* 4-bit field from bit 5 down to 2 */
+
+/* Default values */
+default {
+    carry_in = 0;
+    alu_op = ALU_ADD;
+}
+
+/* Pattern with iterator */
+pattern "00{opcode:3}{operand:3}" {
+    alu_op = opcode;
+    carry_in = operand[2];  /* Use highest bit of operand */
+}
+
+/ Loop for generating multiple patterns */
+for op in 0..7 {
+    pattern "01{op:3}---" {
+        alu_op = ALU_ADD + op;
+    }
+}
+
+/* Pattern group for common functionality */
+group base_alu "1-----" {
+    carry_in = 0;
+}
+
+pattern base_alu {
+    alu_op = ALU_ADD;  /* Inherits carry_in=0 from group */
+}

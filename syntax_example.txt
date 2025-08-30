@@ -1,0 +1,34 @@
+/* a comment */
+
+signal	hey	:	3; /* signal "hey" is at 3rd bit; */
+field	bey	:	{5,4}; /* field "bey" 4-bit wide, offset at 5th bit */
+
+pattern "00000XXX" {
+	/* XXX means iterating over every possible solution, so output is like:
+		00000001
+		00000010
+		00000011
+		00000100
+		00000101
+		00000110
+		00000111
+		And we can do stuff like 00YYYXXX and iterate them separately like
+		00000000
+		00001000
+		00010000
+		00011000
+		00100000
+		00101000
+		00110000
+		00111000
+		00000001
+		00001001
+		00010001
+		....
+	*/
+	hey; /* turns on 3rd bit in the binary word */
+};
+
+pattern "00000000" {
+	bey	: 5;	/* field "bey" is written 5 */
+};
