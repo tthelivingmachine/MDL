@@ -34,3 +34,13 @@ pattern "11000101" {
     reg_addr : 0b101; /* Set register address to 5 */
                      /* (clock_en is active by default) */
 }
+
+pattern "00000{op:3}" {
+    alu_en;        /* Set bit 0 for all generated patterns */
+    alu_op : op;   /* Use the iterator's value for this field */
+}
+
+/* Use a wildcard for flexibility without generation */
+pattern "1---0010" {
+    mem_read; /* This is a single pattern where bits 6,5,4 are ignored. */
+}

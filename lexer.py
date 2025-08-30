@@ -13,10 +13,10 @@ TOKEN_SPEC = [
     ("DEFAULT",     r"default\b"),
 
     # Literals
+    ("PATTERN_STR", r'"[01{}:\-]+"'), # Pattern strings with 0,1,{},-
     ("BIN_NUMBER",  r"0b[01]+"),
     ("HEX_NUMBER",  r"0x[0-9A-Fa-f]+"),
     ("NUMBER",      r"\d+"),
-    ("PATTERN_STR", r'"[01{}-]+"'),  # Pattern strings with 0,1,{},-
     ("IDENT",       r"[A-Za-z_]\w*"),
 
     # Operators and delimiters

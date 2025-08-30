@@ -93,7 +93,63 @@ class Parser:
         self.expect("RBRACE")
 
     def parse_group(self):
-        pass
+        self.expect("GROUP")
+        name = self.expect("IDENT").value
+
+        pattern = self.parse_pattern_expr()
+
+        self.expect("LBRACE")
+        assigns = []
+        
+        while self.peek().type != "RBRACE":
+            target = self.expect("IDENT").value
+            if self.peek().type == "COLON":
+                self.advance()
+                value_token = self.advance()
+                assigns.append(("field", target, value_token.value))
+                self.expect("SEMICOL")
+            else:
+                assigns.append(("signal", target, true))
+                self.expect("SEMICOL")
+        self.expect("RBRACE")
+
+        group = Group(name, bitpattern, assignments)
+        self.groups[name] = group
+
+    def parse_pattern_expr(self):
+        parts = []
+        if self.peek().type == "PATTERN_STR":
+            token = self.advance()
+            return token.value.strip('"')
+
+        while not self.at_end():
+            token = self.peek()
+            if token.type == "NUMBER":
+                parts.append(self.advance().value)
+                continue
+            if token.type == "LBRACE":
+                if (
+                        self.tokens[self.pointer + 1].type == "IDENT"
+                        and self.tokens[self.pointer + 2].type == "COLON"
+                        and self.tokens[self.pointer + 3].type == "NUMBER"
+                        and self.tokens[self.pointer + 4].type == "RBRACE"
+                ):
+                    self.expect("LBRACE")
+                    name = self.expect("IDENT").value
+                    self.expect("COLON")
+                    width = self.expect("NUMBER").value
+                    self.expect("RBRACE")
+                    parts.append(f"{{{name}:{width}}}")
+                    continue
+                else:
+                    break
+                break
+            return "".join(parts)
+
+    def parse_pattern(self):
+        self.expect("PATTERN")
+        token = self.advance()
+        if token.type == "PATTERN_STR"
 
     def at_end(self):
         return self.pointer >= len(self.tokens)
